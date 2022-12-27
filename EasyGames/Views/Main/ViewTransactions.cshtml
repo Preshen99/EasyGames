@@ -1,0 +1,74 @@
+﻿@model IEnumerable<EasyGames.Models.Transaction>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+
+<body>
+    <h3>Transaction List</h3>
+
+    <hr />
+
+    @using (Html.BeginForm())
+    {
+        <p>
+            Find: @Html.TextBox("searching")
+            <input type="submit" value="search" />
+        </p>
+    }
+
+    <hr />
+
+    <p>
+        @Html.ActionLink("Create New", "Create", "Transactions")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                Amount
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Comment
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            if (@item.ClientID == @ViewBag.id)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TransactionType.TransactionTypeName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Comment)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit Comment", "EditComment", new { id = item.TransactionID })
+                    </td>
+                </tr>
+            }
+        }
+
+    </table>
+
+    <hr />
+
+    @Html.ActionLink("Client List", "Index")
+</body>
+</html>
