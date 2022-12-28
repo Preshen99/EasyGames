@@ -56,7 +56,7 @@ namespace EasyGames.Controllers
             {
                 db.Transactions.Add(transaction);
                 db.SaveChanges();
-                return RedirectToAction("ViewTransactions", "Main", new {id = transaction.ClientID});
+                return RedirectToAction("Index", "Main", new {id = transaction.ClientID});
             }
 
             ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "Name", transaction.ClientID);

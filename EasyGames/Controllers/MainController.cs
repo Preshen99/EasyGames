@@ -44,10 +44,10 @@ namespace EasyGames.Controllers
 
         //Testing to see if dynamic balance can be implemented...
         //Not updating db...
-        public ActionResult Sum([Bind(Include = "TransactionID,Amount,TransactionTypeID,ClientID,Comment")] Transaction transaction, [Bind(Include = "ClientID,Name,Surname,ClientBalance")] Client client, int? tempTCID)
-        {
+        public ActionResult Sum([Bind(Include = "TransactionID,Amount,TransactionTypeID,ClientID,Comment")] Transaction transaction, [Bind(Include = "ClientID,Name,Surname,ClientBalance")] Client client, int? id)
+        { 
+            var tempTCID = id;
             ViewBag.TCID = tempTCID;
-            var tcid = tempTCID;
             var check = db.Clients.Where(c => tempTCID == c.ClientID).FirstOrDefault();
             var tempCID = check.ClientID;
             var sumT = db.Transactions.Where(t => tempTCID == t.ClientID).Select(t => t.Amount).Sum();
@@ -58,19 +58,20 @@ namespace EasyGames.Controllers
             ViewBag.sumT = "TempCID: " + sumT;
 
             client.ClientBalance = check.ClientBalance + sumT;
+            var total = check.ClientBalance + sumT;
 
-            ////Test Values
-            ViewBag.CID = "Client ID: " + check.ClientID;
+            //////Test Values
+            ViewBag.CID = "Client ID: " + client.ClientID;
             ViewBag.Name = "Client Name: " + check.Name;
             ViewBag.Surname = "Client Surname: " + check.Surname;
-            ViewBag.ClientBalance = "Client Balance: " + client.ClientBalance;
+            ViewBag.ClientBalance = "Client Balance: " + total;
 
-            (from c in db.Clients
-             where c.ClientID == tempCID
-             select c).ToList().ForEach(x=>x.ClientBalance = client.ClientBalance);
+            //string sumQuery = "UPDATE Client SET ClientBalance = @client.ClientBalance WHERE ClientID = @tcid";
 
+            db.Entry(client).State = EntityState.Modified;
             db.SaveChanges();
-            return View(db.Clients.ToList());
+            //return View();
+            return RedirectToAction("index");
         }
 
         public ActionResult ViewTransactions(int? id, string searching)
