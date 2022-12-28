@@ -1,7 +1,7 @@
 USE [master]
 GO
 
-/****** Object:  Database [EasyGamesDB]    Script Date: 2022/12/27 22:46:23 ******/
+/****** Object:  Database [EasyGamesDB]    Script Date: 2022/12/28 12:54:09 ******/
 CREATE DATABASE [EasyGamesDB]
  CONTAINMENT = NONE
  ON  PRIMARY 
