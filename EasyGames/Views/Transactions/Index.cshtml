@@ -31,9 +31,8 @@
             </th>
             <th></th>
         </tr>
-    
-    @foreach (var item in Model) {
-        if (@item.ClientID == @ViewBag.id)
+
+        @foreach (var item in Model)
         {
             <tr>
                 <td>
@@ -54,8 +53,8 @@
                     @Html.ActionLink("Delete", "Delete", new { id = item.TransactionID })
                 </td>
             </tr>
+
         }
-    }
 
     </table>
 </body>

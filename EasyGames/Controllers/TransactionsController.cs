@@ -50,13 +50,37 @@ namespace EasyGames.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "TransactionID,Amount,TransactionTypeID,ClientID,Comment")] Transaction transaction)
+        public ActionResult Create([Bind(Include = "TransactionID,Amount,TransactionTypeID,ClientID,Comment")] Transaction transaction, [Bind(Include = "ClientID,Name,Surname,ClientBalance")] Client client)
         {
             if (ModelState.IsValid)
             {
                 db.Transactions.Add(transaction);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var tempTCID = transaction.ClientID;
+                var check = db.Clients.Where(c => tempTCID.Equals(c.ClientID)).FirstOrDefault();
+                var tempCID = check.ClientID;
+
+                //Test values
+                //ViewBag.TempCID = "TempCID: " + tempCID;
+                //ViewBag.TempTCID = "TempTCID: " + tempTCID.ToString();
+
+                //client.ClientID = client.ClientID;
+                //client.Name = check.Name;
+                //client.Surname = check.Surname;
+                client.ClientBalance = check.ClientBalance + transaction.Amount;
+
+                //Test Values
+                //ViewBag.CID = "Client ID: " + client.ClientID;
+                //ViewBag.Name = "Client Name: " + client.Name.ToString();
+                //ViewBag.Surname = "Client Surname: " + client.Surname.ToString();
+                //ViewBag.ClientBalance = "Client Balance: " + client.ClientBalance.ToString();
+
+                db.SaveChanges();
+                return RedirectToAction("Index", "Main");
             }
 
             ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "Name", transaction.ClientID);
@@ -76,6 +100,7 @@ namespace EasyGames.Controllers
             {
                 return HttpNotFound();
             }
+
             ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "Name", transaction.ClientID);
             ViewBag.TransactionTypeID = new SelectList(db.TransactionTypes, "TransactionTypeID", "TransactionTypeName", transaction.TransactionTypeID);
             return View(transaction);
