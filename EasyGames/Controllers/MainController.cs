@@ -44,7 +44,7 @@ namespace EasyGames.Controllers
 
         //Testing to see if dynamic balance can be implemented...
         //Not updating db...
-        public ActionResult Sum([Bind(Include = "TransactionID,Amount,TransactionTypeID,ClientID,Comment")] Transaction transaction, [Bind(Include = "ClientID,Name,Surname,ClientBalance")] Client client, int? id)
+        public ActionResult Sum([Bind(Include = "TransactionID,Amount,TransactionTypeID,ClientID,Comment")] Transaction transaction, Client client, int? id)
         { 
             var tempTCID = id;
             ViewBag.TCID = tempTCID;
@@ -53,23 +53,30 @@ namespace EasyGames.Controllers
             var sumT = db.Transactions.Where(t => tempTCID == t.ClientID).Select(t => t.Amount).Sum();
 
             //Test values
-            ViewBag.TempCID = "TempCID: " + tempCID;
-            ViewBag.TempTCID = "TempTCID: " + tempTCID.ToString();
-            ViewBag.sumT = "TempCID: " + sumT;
+            //ViewBag.TempCID = "TempCID: " + tempCID;
+            //ViewBag.TempTCID = "TempTCID: " + tempTCID.ToString();
+            //ViewBag.sumT = "TempCID: " + sumT;
 
+            //client.ClientID = check.ClientID;
+            //client.Name = check.Name;
+            //client.Surname = check.Surname;
             client.ClientBalance = check.ClientBalance + sumT;
-            var total = check.ClientBalance + sumT;
+            //var total = check.ClientBalance + sumT;
 
-            //////Test Values
-            ViewBag.CID = "Client ID: " + client.ClientID;
-            ViewBag.Name = "Client Name: " + check.Name;
-            ViewBag.Surname = "Client Surname: " + check.Surname;
-            ViewBag.ClientBalance = "Client Balance: " + total;
+            //Test Values
+            //ViewBag.CID = "Client ID: " + client.ClientID;
+            //ViewBag.Name = "Client Name: " + check.Name;
+            //ViewBag.Surname = "Client Surname: " + check.Surname;
+            //ViewBag.ClientBalance = "Client Balance: " + client.ClientBalance;
 
-            //string sumQuery = "UPDATE Client SET ClientBalance = @client.ClientBalance WHERE ClientID = @tcid";
+            //transaction.Amount = 100;
+            if (ModelState.IsValid)
+            {
+                db.Entry(client).State = EntityState.Added;
+                db.Clients.Append(client);
+                db.SaveChanges();
+            }
 
-            db.Entry(client).State = EntityState.Modified;
-            db.SaveChanges();
             //return View();
             return RedirectToAction("index");
         }

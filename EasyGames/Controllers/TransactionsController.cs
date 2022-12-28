@@ -54,6 +54,7 @@ namespace EasyGames.Controllers
         {
             if (ModelState.IsValid)
             {
+                //transaction.Amount = 100;
                 db.Transactions.Add(transaction);
                 db.SaveChanges();
                 return RedirectToAction("Index", "Main", new {id = transaction.ClientID});
@@ -76,6 +77,7 @@ namespace EasyGames.Controllers
             {
                 return HttpNotFound();
             }
+
 
             ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "Name", transaction.ClientID);
             ViewBag.TransactionTypeID = new SelectList(db.TransactionTypes, "TransactionTypeID", "TransactionTypeName", transaction.TransactionTypeID);
