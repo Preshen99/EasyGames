@@ -35,11 +35,42 @@ namespace EasyGames.Controllers
                     clients = clients.OrderByDescending(c => c.Surname);
                     break;
                 default:
-                    clients = clients.OrderBy(c=>c.Name);
+                    clients = clients.OrderBy(c => c.Name);
                     break;
             }
 
             return View(clients.ToList());
+        }
+
+        //Testing to see if dynamic balance can be implemented...
+        //Not updating db...
+        public ActionResult Sum([Bind(Include = "TransactionID,Amount,TransactionTypeID,ClientID,Comment")] Transaction transaction, [Bind(Include = "ClientID,Name,Surname,ClientBalance")] Client client, int? tempTCID)
+        {
+            ViewBag.TCID = tempTCID;
+            var tcid = tempTCID;
+            var check = db.Clients.Where(c => tempTCID == c.ClientID).FirstOrDefault();
+            var tempCID = check.ClientID;
+            var sumT = db.Transactions.Where(t => tempTCID == t.ClientID).Select(t => t.Amount).Sum();
+
+            //Test values
+            ViewBag.TempCID = "TempCID: " + tempCID;
+            ViewBag.TempTCID = "TempTCID: " + tempTCID.ToString();
+            ViewBag.sumT = "TempCID: " + sumT;
+
+            client.ClientBalance = check.ClientBalance + sumT;
+
+            ////Test Values
+            ViewBag.CID = "Client ID: " + check.ClientID;
+            ViewBag.Name = "Client Name: " + check.Name;
+            ViewBag.Surname = "Client Surname: " + check.Surname;
+            ViewBag.ClientBalance = "Client Balance: " + client.ClientBalance;
+
+            (from c in db.Clients
+             where c.ClientID == tempCID
+             select c).ToList().ForEach(x=>x.ClientBalance = client.ClientBalance);
+
+            db.SaveChanges();
+            return View(db.Clients.ToList());
         }
 
         public ActionResult ViewTransactions(int? id, string searching)

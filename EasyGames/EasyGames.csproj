@@ -176,6 +176,7 @@
     <Content Include="Views\Main\Index.cshtml" />
     <Content Include="Views\Main\ViewTransactions.cshtml" />
     <Content Include="Views\Main\EditComment.cshtml" />
+    <Content Include="Views\Main\Sum.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
